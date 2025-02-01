@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dino Adventure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            background-color: #E8F5E9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #2E7D32;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+        }
+        #story {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+        .option {
+            display: block;
+            background-color: #66BB6A;
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+        .option:hover {
+            background-color: #43A047;
+        }
+        #restart {
+            display: none;
+            margin-top: 20px;
+            text-align: center;
+        }
+        #restart button {
+            background-color: #FF7043;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        #restart button:hover {
+            background-color: #F4511E;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dino Adventure 🦕</h1>
+    <div id="story"></div>
+    <div id="options"></div>
+    <div id="restart">
+        <button onclick="startGame()">Play Again</button>
+    </div>
+
+    <script>
+        // Game data structure
+        const gameData = {
+            start: {
+                text: "Welcome to Dino Adventure! What's your name?",
+                options: [
+                    { text: "Tap to enter your name", nextText: 'enterName' }
+                ]
+            },
+            enterName: {
+                text: "",
+                options: []
+            },
+            scene1: {
+                text: "",
+                options: []
+            },
+            // Additional scenes will be added dynamically
+        };
+
+        let playerName = '';
+        let currentScene = 'start';
+
+        // Function to display the current scene
+        function showScene(sceneKey) {
+            const scene = gameData[sceneKey];
+            const storyDiv = document.getElementById('story');
+            const optionsDiv = document.getElementById('options');
+
+            storyDiv.innerHTML = scene.text;
+            optionsDiv.innerHTML = '';
+
+            scene.options.forEach(option => {
+                const button = document.createElement('a');
+                button.className = 'option';
+                button.innerText = option.text;
+                button.href = '#';
+                button.onclick = () => {
+                    if (option.nextText) {
+                        showScene(option.nextText);
+                    }
+                };
+                optionsDiv.appendChild(button);
+            });
+
+            // Show restart button at the end
+            if (scene.options.length === 0) {
+                document.getElementById('restart').style.display = 'block';
+            } else {
+                document.getElementById('restart').style.display = 'none';
+            }
+        }
+
+        // Start the game
+        function startGame() {
+            playerName = '';
+            currentScene = 'start';
+            showScene(currentScene);
+        }
+
+        // Event for entering name
+        function enterName() {
+            playerName = prompt("Please enter your name:");
+            if (!playerName) {
+                playerName = "Explorer";
+            }
+            // Update scene1 with personalized text
+            gameData.scene1.text = `Hello, ${playerName}! Today is a special day. While playing in your backyard, you discover a sparkling portal surrounded by ferns. It's shimmering with all the colors of the rainbow. What do you do?`;
+            gameData.scene1.options = [
+                { text: "Step into the portal", nextText: 'portal' },
+                { text: "Touch the ferns", nextText: 'ferns' },
+                { text: "Look around carefully", nextText: 'lookAround' }
+            ];
+            showScene('scene1');
+        }
+
+        // Define the rest of the game scenes
+        gameData.portal = {
+            text: "You step through the portal and find yourself in a land filled with friendly dinosaurs! A cheerful Stegosaurus waves at you. What will you do?",
+            options: [
+                { text: "Wave back and say hello", nextText: 'helloDino' },
+                { text: "Ask for a tour", nextText: 'dinoTour' },
+                { text: "Invite the Stegosaurus to play", nextText: 'playWithDino' }
+            ]
+        };
+
+        gameData.ferns = {
+            text: "As you touch the ferns, they giggle and sparkle. Suddenly, tiny dinosaurs appear, each wanting to show you something special. Which do you follow?",
+            options: [
+                { text: "The one with the glowing tail", nextText: 'glowingTail' },
+                { text: "The one with the shining eyes", nextText: 'shiningEyes' },
+                { text: "The one hopping excitedly", nextText: 'hoppingDino' }
+            ]
+        };
+
+        gameData.lookAround = {
+            text: "You look around and find a mysterious map half-buried under leaves. It shows a path to a hidden treasure. Do you want to:",
+            options: [
+                { text: "Follow the map", nextText: 'followMap' },
+                { text: "Search for a friend to join you", nextText: 'findFriend' },
+                { text: "Start an adventure story", nextText: 'startStory' }
+            ]
+        };
+
+        // Continue building scenes...
+        gameData.helloDino = {
+            text: "The Stegosaurus smiles and invites you to a dino party. You dance, laugh, and make new friends! 🎉 The End.",
+            options: []
+        };
+
+        gameData.dinoTour = {
+            text: "You ride on the Stegosaurus's back, exploring amazing places. You learn how dinosaurs live and play. 🦖 The End.",
+            options: []
+        };
+
+        gameData.playWithDino = {
+            text: "You play hide-and-seek among giant trees. The Stegosaurus is impressed by your hiding skills! 🤗 The End.",
+            options: []
+        };
+
+        gameData.glowingTail = {
+            text: "The tiny dinosaur leads you to a cave filled with sparkling gems. It's a magical place where your dreams come true! ✨ The End.",
+            options: []
+        };
+
+        gameData.shiningEyes = {
+            text: "You discover a secret garden where dinosaurs grow their favorite foods. You taste delicious prehistoric fruits! 🍉 The End.",
+            options: []
+        };
+
+        gameData.hoppingDino = {
+            text: "Following the hopping dinosaur, you find a playground with swings made of vines. You have the best time ever! 🛝 The End.",
+            options: []
+        };
+
+        gameData.followMap = {
+            text: "You follow the map and find a treasure chest filled with books. Each book tells a new adventure! 📚 The End.",
+            options: []
+        };
+
+        gameData.findFriend = {
+            text: "You meet a friendly Pterodactyl who flies you over the land, showing you breathtaking views! 🦅 The End.",
+            options: []
+        };
+
+        gameData.startStory = {
+            text: "You begin telling an adventure story, and the trees and creatures come alive, joining in your tale! 🎭 The End.",
+            options: []
+        };
+
+        // Assign the enterName function to the 'enterName' scene
+        gameData.enterName.action = enterName;
+
+        // Override the showScene function to handle 'enterName' special case
+        function showScene(sceneKey) {
+            if (sceneKey === 'enterName') {
+                enterName();
+                return;
+            }
+
+            const scene = gameData[sceneKey];
+            const storyDiv = document.getElementById('story');
+            const optionsDiv = document.getElementById('options');
+
+            storyDiv.innerHTML = scene.text;
+            optionsDiv.innerHTML = '';
+
+            scene.options.forEach(option => {
+                const button = document.createElement('a');
+                button.className = 'option';
+                button.innerText = option.text;
+                button.href = '#';
+                button.onclick = () => {
+                    if (option.nextText) {
+                        showScene(option.nextText);
+                    }
+                };
+                optionsDiv.appendChild(button);
+            });
+
+            if (scene.options.length === 0) {
+                document.getElementById('restart').style.display = 'block';
+            } else {
+                document.getElementById('restart').style.display = 'none';
+            }
+        }
+
+        // Start the game on page load
+        startGame();
+    </script>
+</body>
+</html>
